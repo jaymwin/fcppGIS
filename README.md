@@ -1,2 +1,2 @@
 # fcppGIS
-scripts and data to make maps for Full Cycle Phenology Project
+scripts and data to make maps for the Full Cycle Phenology Project
