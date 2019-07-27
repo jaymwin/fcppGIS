@@ -8,6 +8,7 @@ library(here)
 
 dod <- read_csv('https://raw.githubusercontent.com/jaymwin/fcpp_GIS/master/data/DoD_sites_latlong.csv')
 
+# separate Alaska and convert coordinates for plotting all 50 states
 dod_ak <- dod
 
 coordinates(dod_ak) <- ~lon + lat
@@ -22,8 +23,10 @@ dod <- dod %>%
 usa <- usa_sf() %>%
   filter(name != 'Hawaii')
 
+
 # by flyway ---------------------------------------------------------------
 
+# designate flyways
 dod2 <- dod %>%
   mutate(
     flyway = case_when(
@@ -35,14 +38,16 @@ dod2 <- dod %>%
     )
   )
 
+# set projection
 dod3 <- dod2 %>% 
   st_as_sf(coords = c("lon", "lat"))
 dod3 <- st_set_crs(dod3, 4326)
 st_is_longlat(dod3)
 
+# transform to equal area
 dod3 <- st_transform(dod3, "+proj=aea +lat_1=25 +lat_2=50 +lon_0=-100")
 
-# by flyway
+# plot by flyway
 ggplot() +
   geom_sf(data = usa, fill = 'grey95') +
   geom_sf(data = dod3, aes(color = flyway), size = 3, show.legend = "point") +
@@ -53,7 +58,10 @@ ggplot() +
   ) +
   theme_minimal() + coord_sf(crs = "+proj=aea +lat_1=25 +lat_2=50 +lon_0=-100")
 
+# save map
 ggsave(here('map.png'), height = 4, width = 6, units = 'in', dpi = 600)
+
+# by site ID (a letter in this case) ---------------------------------------------------------------
 
 # by site ID
 ggplot() +
@@ -68,5 +76,6 @@ ggplot() +
   ) +
   theme_minimal() + coord_sf(crs = "+proj=aea +lat_1=25 +lat_2=50 +lon_0=-100")
 
+# save map
 ggsave(here('map.png'), height = 4, width = 6, units = 'in', dpi = 600)
 
