@@ -19,6 +19,3 @@ dat <- dat %>%
     distance = pmap_dbl(., calculate_distances)
   )
 dat
-
-ggplot(dat, aes(dist, distance)) +
-  geom_point()
